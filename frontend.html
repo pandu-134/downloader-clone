@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Downloader</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <form id="downloadForm">
+        <label for="link">Youtube Video URL:</label>
+        <input type="text" id="link" name="link" placeholder="Enter video URL" required>
+        <div class ="options">
+            <label for="quality">Select Quality:</label>
+            <select id="quality" name="quality">
+                <option value="720p">720p</option>
+                <option value="1080p">1080p</option>
+                <option value="480p">480p</option>
+                <option value="360p">360p</option>
+            </select>
+
+        </div>
+        <br>
+        <button type="submit">Download</button>
+        <div class="progress-container">
+            <p>Download Progress:</p>
+            <div class="progress-bar">
+                <div></div>
+            </div>
+    </form>
+
+    <script>
+        document.getElementById('downloadForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const progressContainer = document.querySelector('.progress-container');
+            const progressBar = document.querySelector('.progress-bar > div');
+            progressContainer.style.display = 'block';
+            progressBar.style.width = '0%';
+
+            const formData = new FormData(event.target);
+            const response = await fetch('http://localhost:8000/download', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Response:',result);
+                progressBar.style.width = '100%';
+                alert('Download Successful!');
+            } else {
+                progressBar.style.width = '0%';
+                console.error('Error:', response.statusText);
+                alert('Download Failed!');
+            }
+        });
+    </script>
+</body>
+</html>
